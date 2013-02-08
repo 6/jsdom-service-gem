@@ -28,14 +28,18 @@ describe "JSDOMService" do
     end
 
     context "if the service responds with an error" do
-      it "raises a JSDOMService::ResponseException" do
-        pending
+      it "raises a JSDOMService::RequestException" do
+        stub_request(:post, "http://example.com").to_raise(RestClient::Exception)
+
+        expect { go! }.to raise_error(JSDOMService::RequestException)
       end
     end
 
     context "if the returned JSON includes an error" do
       it "raises a JSDOMService::ParseException" do
-        pending
+        stub!(error: {reason: "invalid html"})
+
+        expect { go! }.to raise_error(JSDOMService::ParseException, "invalid html")
       end
     end
 
